@@ -52,9 +52,11 @@ async def send_ble_command():
 def handle_request():
     """Obsługa żądania HTTP - wysyła komendę przez BLE."""
     if  gopro_connected:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        result = loop.run_until_complete(send_ble_command())
+        # loop = asyncio.new_event_loop()
+        # asyncio.set_event_loop(loop)
+        # result = loop.run_until_complete(send_ble_command())
+        result = asyncio.run(send_ble_command())
+
         return result
     else:
         img = Image.new("RGB", (200, 100), color=(255, 0, 0))  # Czerwony obrazek
