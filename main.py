@@ -14,6 +14,8 @@ app = Flask(__name__)
 ble_client = BleakClient(GOPRO_BLE_ADDRESS)
 
 gopro_connected =False
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
 
 async def connect_gopro():
     global ble_client
@@ -52,10 +54,8 @@ async def send_ble_command():
 def handle_request():
     """Obsługa żądania HTTP - wysyła komendę przez BLE."""
     if  gopro_connected:
-        # loop = asyncio.new_event_loop()
-        # asyncio.set_event_loop(loop)
-        # result = loop.run_until_complete(send_ble_command())
-        result = asyncio.run(send_ble_command())
+
+        result = loop.run_until_complete(send_ble_command())
 
         return result
     else:
@@ -66,5 +66,7 @@ def handle_request():
         return send_file(img_io, mimetype="image/jpeg")
 
 if __name__ == "__main__":
-    asyncio.run(connect_gopro())
+    # asyncio.run(connect_gopro())
+    loop.run_until_complete(connect_gopro())
+
     app.run(host="0.0.0.0", port=5000)
